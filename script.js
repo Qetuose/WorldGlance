@@ -1,7 +1,11 @@
 'use strict';
 
 const countriesContainer = document.querySelector('.countries--container');
+const searchBar = document.querySelector('.search-box');
 
+// Event lisiners
+
+// Getting and displaying countries
 const getAllCountries = async function () {
   try {
     const res = await fetch('https://restcountries.com/v3.1/all');
@@ -23,10 +27,14 @@ getAllCountries().then(res => {
 
 const renderCountry = function (country) {
   let cur = Object.values(country.currencies || {})[0];
-  if (cur !== undefined) cur = Object.values(country.currencies || {})[0].name;
+  let curSymbol;
+  if (cur !== undefined) {
+    cur = Object.values(country.currencies || {})[0].name;
+    curSymbol = Object.values(country.currencies || {})[0].symbol;
+  }
 
   const html = `
-    <div class="country">
+    <div class="country" data-id = "${country.altSpellings[0]}">
         <img
           class="country-flag"
           src="${country.flags.svg}"
@@ -64,3 +72,31 @@ const renderCountry = function (country) {
 
   countriesContainer.insertAdjacentHTML('afterbegin', html);
 };
+
+// !!!NEED OPTIMAZING
+//Seaching for a countries
+const searchForCountry = function () {
+  getAllCountries().then(res => {
+    res.find(country => {
+      const countryName = country.name.common;
+      const elements = document.querySelectorAll(
+        `[data-id="${country.altSpellings[0]}"]`
+      );
+
+      elements.forEach(el => {
+        el.classList.remove('hidden');
+      });
+
+      if (
+        countryName.slice(0, searchBar.value.length).toLowerCase() !==
+        String(searchBar.value).toLowerCase()
+      ) {
+        elements.forEach(el => {
+          el.classList.add('hidden');
+        });
+      }
+    });
+  });
+};
+
+searchBar.addEventListener('keyup', searchForCountry);
