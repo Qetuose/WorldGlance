@@ -73,27 +73,22 @@ const renderCountry = function (country) {
   countriesContainer.insertAdjacentHTML('afterbegin', html);
 };
 
-// !!!NEED OPTIMAZING
 //Seaching for a countries
 const searchForCountry = function () {
   getAllCountries().then(res => {
     res.find(country => {
       const countryName = country.name.common;
-      const elements = document.querySelectorAll(
+
+      const element = document.querySelector(
         `[data-id="${country.altSpellings[0]}"]`
       );
-
-      elements.forEach(el => {
-        el.classList.remove('hidden');
-      });
+      element.classList.remove('hidden');
 
       if (
         countryName.slice(0, searchBar.value.length).toLowerCase() !==
         String(searchBar.value).toLowerCase()
       ) {
-        elements.forEach(el => {
-          el.classList.add('hidden');
-        });
+        element.classList.add('hidden');
       }
     });
   });
