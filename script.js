@@ -2,38 +2,52 @@
 
 const countriesContainer = document.querySelector('.countries--container');
 const searchBar = document.querySelector('.search-box');
+const h1 = document.querySelector('h1');
 
 // Event lisiners
+class App {
+  countries = [];
 
-// Getting and displaying countries
-const getAllCountries = async function () {
-  try {
-    const res = await fetch('https://restcountries.com/v3.1/all');
-    if (!res.ok) throw new Error('Could not find countries');
+  constructor() {
+    this._renderCountries();
 
-    const data = res.json();
-
-    return data;
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-getAllCountries().then(res => {
-  res.forEach(country => {
-    renderCountry(country);
-  });
-});
-
-const renderCountry = function (country) {
-  let cur = Object.values(country.currencies || {})[0];
-  let curSymbol;
-  if (cur !== undefined) {
-    cur = Object.values(country.currencies || {})[0].name;
-    curSymbol = Object.values(country.currencies || {})[0].symbol;
+    searchBar.addEventListener('keyup', this.searchForCountry.bind(this));
+    countriesContainer.addEventListener('click', this.openModal.bind(this));
+    h1.addEventListener('click', this.test.bind(this));
   }
 
-  const html = `
+  // Getting and displaying countries
+  async getAllCountries() {
+    try {
+      const res = await fetch('https://restcountries.com/v3.1/all');
+      if (!res.ok) throw new Error('Could not find countries');
+
+      const data = res.json();
+
+      return data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  _renderCountries() {
+    this.getAllCountries().then(res => {
+      this.countries.push(res);
+      res.forEach(country => {
+        this.renderCountry(country);
+      });
+    });
+  }
+
+  renderCountry(country) {
+    let cur = Object.values(country.currencies || {})[0];
+    let curSymbol;
+    if (cur !== undefined) {
+      cur = Object.values(country.currencies || {})[0].name;
+      curSymbol = Object.values(country.currencies || {})[0].symbol;
+    }
+
+    const html = `
     <div class="country" data-id = "${country.altSpellings[0]}">
         <img
           class="country-flag"
@@ -70,28 +84,34 @@ const renderCountry = function (country) {
     </div>
 `;
 
-  countriesContainer.insertAdjacentHTML('afterbegin', html);
-};
+    countriesContainer.insertAdjacentHTML('afterbegin', html);
+  }
 
-//Seaching for a countries
-const searchForCountry = function () {
-  getAllCountries().then(res => {
-    res.find(country => {
-      const countryName = country.name.common;
-
+  //Seaching for a countries
+  searchForCountry() {
+    this.countries[0].forEach(country => {
       const element = document.querySelector(
         `[data-id="${country.altSpellings[0]}"]`
       );
       element.classList.remove('hidden');
-
       if (
-        countryName.slice(0, searchBar.value.length).toLowerCase() !==
+        country.name.common.slice(0, searchBar.value.length).toLowerCase() !==
         String(searchBar.value).toLowerCase()
-      ) {
+      )
         element.classList.add('hidden');
-      }
     });
-  });
-};
+  }
 
-searchBar.addEventListener('keyup', searchForCountry);
+  test() {}
+
+  //Open modal and functionality
+
+  openModal(e) {
+    if (!e.target.closest('.country')) return;
+    console.log(e.target.closest('.country'));
+  }
+}
+
+const app = new App();
+
+console.log(app.countries);
