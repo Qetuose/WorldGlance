@@ -30,12 +30,26 @@
     <div class="countries--container"></div>
     <div class="modal hidden">
       <button class="modal--button-close">x</button>
-      <p>
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nemo odit
-        quibusdam, necessitatibus, enim asperiores neque consectetur eius
-        molestias accusantium, corrupti quo minus nostrum dignissimos magnam
-        exercitationem. Eius dolore cumque quas!
-      </p>
+      <div class="modal--header">
+        <h2 class="heading-secondary modal--country-name"></h2>
+        <img class="modal--header-img" src="" alt="" />
+      </div>
+      <div class="modal--info-wrapper">
+        <div class="modal-data-container">
+          <h3 class="modal--label-text">Population:</h3>
+          <p class="modal--population"></p>
+        </div>
+
+        <div class="modal-data-container">
+          <h3 class="modal--label-text">Language:</h3>
+          <p class="modal--language"></p>
+        </div>
+
+        <div class="modal--neighboring-container modal-data-container">
+          <h3 class="modal--label-text">Neighboring countries:</h3>
+          <div class="modal--neighboring-flags"></div>
+        </div>
+      </div>
     </div>
     <div class="overlay hidden"></div>
   </body>
