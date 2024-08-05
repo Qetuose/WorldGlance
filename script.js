@@ -21,9 +21,6 @@ const modalCapital = document.querySelector('.modal--capital');
 const modalTimezone = document.querySelector('.modal--timezone');
 const modalCurrency = document.querySelector('.modal--currency');
 
-//for testing
-const h1 = document.querySelector('h1');
-
 // Event lisiners
 class App {
   #countries = [];
@@ -36,9 +33,6 @@ class App {
     searchBar.addEventListener('keyup', this._searchForCountry.bind(this));
     countriesContainer.addEventListener('click', this._openModal.bind(this));
     modalCloseBtn.addEventListener('click', this._closeModal.bind(this));
-
-    //for testing
-    h1.addEventListener('click', this.test.bind(this));
   }
   ///////////////////////////////////////////
   // Getting & displaying countries
@@ -131,11 +125,6 @@ class App {
     });
   }
 
-  async test() {
-    const res = await fetch();
-  }
-
-  ///////////////////////////////////////////
   // Modal
   _openModal(e) {
     if (!e.target.closest('.country')) return;
