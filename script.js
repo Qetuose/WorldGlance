@@ -4,15 +4,21 @@ const countriesContainer = document.querySelector('.countries--container');
 const searchBar = document.querySelector('.search-box');
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
-const modalCloseBtn = document.querySelector('.modal--button-close');
-const modalCountryName = document.querySelector('.modal--country-name');
 const neighboringContainer = document.querySelector(
   '.modal--neighboring-container'
 );
+const modalCloseBtn = document.querySelector('.modal--button-close');
+const modalCountryName = document.querySelector('.modal--country-name');
 const neighboringFlags = document.querySelector('.modal--neighboring-flags');
 const modalPop = document.querySelector('.modal--population');
 const modalLang = document.querySelector('.modal--language');
-const modalHeaderImg = document.querySelector('.modal--header-img');
+const modalHeaderFlag = document.querySelector('.modal--header-img-flag');
+const modalHeaderCOA = document.querySelector('.modal--header-img-coatOfArms');
+const modalLocation = document.querySelector('.modal-location');
+const modalSize = document.querySelector('.modal--size');
+const modalDemonym = document.querySelector('.modal--demonym');
+const modalCapital = document.querySelector('.modal--capital');
+const modalTimezone = document.querySelector('.modal--timezone');
 
 //for testing
 const h1 = document.querySelector('h1');
@@ -20,9 +26,11 @@ const h1 = document.querySelector('h1');
 // Event lisiners
 class App {
   #countries = [];
+  #map;
 
   constructor() {
     this._renderCountries();
+    this._renderMap();
 
     searchBar.addEventListener('keyup', this._searchForCountry.bind(this));
     countriesContainer.addEventListener('click', this._openModal.bind(this));
@@ -147,30 +155,44 @@ class App {
 
     neighboringFlags.innerHTML = '';
     modalLang.innerHTML = '';
+    modalHeaderCOA.src = '';
   }
 
   _displayModalData(elementID) {
     this.#countries[0].find(country => {
       if (country.altSpellings[0] === elementID) {
-        modalCountryName.innerHTML = country.name.common;
-        modalHeaderImg.src = country.flags.svg;
-        modalPop.innerHTML = country.population;
+        console.log(country);
+
+        modalLocation.innerHTML = country.continents[0];
+        modalCountryName.innerHTML = country.name.official;
+        modalHeaderFlag.src = country.flags.svg;
+        modalSize.innerHTML = country.area;
+        modalCapital.innerHTML = country.capital;
+        modalTimezone.innerHTML = country.timezones[0];
+        modalDemonym.innerHTML = country.demonyms.eng.f;
+        this.#map.setView(country.latlng, 5);
+
+        if (country.coatOfArms.svg) modalHeaderCOA.src = country.coatOfArms.svg;
+        modalPop.innerHTML = new Intl.NumberFormat().format(country.population);
 
         let languagePlaceholder = '';
-        Object.values(country.languages).forEach(language => {
-          languagePlaceholder = languagePlaceholder + `${language}, `;
-        });
-        modalLang.innerHTML = languagePlaceholder.slice(0, -2);
+        if (country.languages) {
+          Object.values(country.languages).forEach(language => {
+            languagePlaceholder = languagePlaceholder + `${language}, `;
+          });
+          modalLang.innerHTML = languagePlaceholder.slice(0, -2);
+        }
 
-        if (!country.borders) return;
-        country.borders.forEach(neighbour => {
-          this._findNeighbors(neighbour).then(res => {
-            const html = `
+        if (country.borders) {
+          country.borders.forEach(neighbour => {
+            this._findNeighbors(neighbour).then(res => {
+              const html = `
             <img class="modal--neighboring-flags-img" src=${res[0].flags.svg} alt=${res[0].flags.alt}/>
             `;
-            neighboringFlags.insertAdjacentHTML('beforeend', html);
+              neighboringFlags.insertAdjacentHTML('beforeend', html);
+            });
           });
-        });
+        }
       }
     });
   }
@@ -181,6 +203,17 @@ class App {
     );
     const data = res.json();
     return data;
+  }
+  _renderMap() {
+    this.#map = L.map('map');
+
+    const tiles = new L.tileLayer(
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }
+    ).addTo(this.#map);
   }
 }
 
