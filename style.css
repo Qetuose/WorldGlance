@@ -31,13 +31,31 @@ header {
   display: grid;
   grid-template-columns: 1fr 3fr;
   height: 5.6rem;
-  background-color: #42484d;
+  background-color: var(--color-light--1);
+  padding: 2rem;
+}
+.header--logo {
+  display: flex;
+  margin: 0 2.4rem;
+}
+.header--logo-img {
+  max-width: 6rem;
 }
 .heading--primary {
   align-self: center;
   margin: 0 2rem;
   font-size: 3.2rem;
-  color: var(--color-light--2);
+  background: rgb(2, 0, 36);
+  background: linear-gradient(
+    90deg,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(121, 9, 111, 1) 0%,
+    rgba(0, 202, 255, 1) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-background-clip: text;
+  -moz-text-fill-color: transparent;
 }
 .search-box {
   align-self: center;
@@ -48,6 +66,7 @@ header {
   border-radius: 6px;
   padding-left: 1.4rem;
   font-size: 1.8rem;
+  border: 1px solid var(--color-dark--1);
 }
 /* //////////////////////////////////////////
 //// Country tab */
@@ -107,7 +126,7 @@ header {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  margin-left: 1.5rem;
+  margin: 0 1.5rem;
 }
 
 .country--summary:last-child {
@@ -258,7 +277,7 @@ header {
 .map--container {
   display: flex;
   grid-column: 2;
-  grid-row: 1 / 9;
+  grid-row: 1 / 12;
   justify-content: center;
   align-items: center;
 }

@@ -19,6 +19,7 @@ const modalSize = document.querySelector('.modal--size');
 const modalDemonym = document.querySelector('.modal--demonym');
 const modalCapital = document.querySelector('.modal--capital');
 const modalTimezone = document.querySelector('.modal--timezone');
+const modalCurrency = document.querySelector('.modal--currency');
 
 //for testing
 const h1 = document.querySelector('h1');
@@ -66,15 +67,15 @@ class App {
   _renderCountry(country) {
     let cur = Object.values(country.currencies || {})[0];
     let curSymbol;
-    let region;
 
     if (cur !== undefined) {
       cur = Object.values(country.currencies || {})[0].name;
       curSymbol = Object.values(country.currencies || {})[0].symbol;
     }
+    let pop = country.population;
 
-    if (country.subregion) region = country.subregion;
-    else region = country.region;
+    if (pop / 1000000 > 1) pop = `${(pop / 1000000).toFixed(2)}M`;
+    if (pop / 1000 > 1) pop = `${(pop / 1000).toFixed(2)}K`;
 
     const html = `
     <div class="country" data-id = "${country.altSpellings[0]}">
@@ -86,16 +87,14 @@ class App {
 
         <div class="country--location">
           <h2 class="country--name">${country.name.common}</h2>
-          <span class="country--continent">${region}</span>
+          <span class="country--continent">${country.continents}</span>
         </div>
 
         <div class="country--summary">
 
           <div class="country--summary-data">
             <span class="country--summary-data-label">Population:</span>
-            <span class="country--summary-data-value">${(
-              country.population / 1000000
-            ).toFixed(2)}M</span>
+            <span class="country--summary-data-value">${pop}</span>
           </div>
 
           <div class="country--summary-data">
@@ -104,7 +103,7 @@ class App {
           </div>
 
           <div class="country--summary-data">
-            <span class="country--summary-data-label">Currency:${cur}</span>
+            <span class="country--summary-data-label">Currency:${cur} (${curSymbol})</span>
             <span>
            </span>
           </div>
@@ -161,7 +160,7 @@ class App {
   _displayModalData(elementID) {
     this.#countries[0].find(country => {
       if (country.altSpellings[0] === elementID) {
-        console.log(country);
+        this.#map.setView(country.latlng, 5);
 
         modalLocation.innerHTML = country.continents[0];
         modalCountryName.innerHTML = country.name.official;
@@ -170,7 +169,9 @@ class App {
         modalCapital.innerHTML = country.capital;
         modalTimezone.innerHTML = country.timezones[0];
         modalDemonym.innerHTML = country.demonyms.eng.f;
-        this.#map.setView(country.latlng, 5);
+
+        const currencyPlaceholder = Object.values(country.currencies)[0];
+        modalCurrency.innerHTML = `${currencyPlaceholder.name} (${currencyPlaceholder.symbol})`;
 
         if (country.coatOfArms.svg) modalHeaderCOA.src = country.coatOfArms.svg;
         modalPop.innerHTML = new Intl.NumberFormat().format(country.population);

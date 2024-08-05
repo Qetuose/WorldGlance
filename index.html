@@ -7,6 +7,7 @@
       content="Website to get information about all world countries"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/png" href="logo.png" />
 
     <!------ GoogleFonts --------->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -22,10 +23,14 @@
 
     <link rel="stylesheet" href="style.css" />
     <script defer src="script.js"></script>
-    <title>World-countries</title>
+    <title>WorldGlance - discover the world</title>
   </head>
   <header>
-    <h1 class="heading--primary">WorldGlance</h1>
+    <div class="header--logo">
+      <img class="header--logo-img" src="logo.png" alt="companys logo" />
+      <h1 class="heading--primary">WorldGlance</h1>
+    </div>
+
     <input
       class="search-box"
       type="text"
@@ -56,7 +61,7 @@
 
         <div class="modal-data-container left">
           <h3 class="modal--label-text">Size:</h3>
-          <p class="modal--size"><sup>2</sup></p>
+          <p><span class="modal--size"></span> km<sup>2</sup></p>
         </div>
 
         <div class="modal-data-container left">
@@ -77,6 +82,11 @@
         <div class="modal-data-container left">
           <h3 class="modal--label-text">Language:</h3>
           <p class="modal--language"></p>
+        </div>
+
+        <div class="modal-data-container left">
+          <h3 class="modal--label-text">Currency:</h3>
+          <p class="modal--currency"></p>
         </div>
 
         <div class="modal-data-container left">
